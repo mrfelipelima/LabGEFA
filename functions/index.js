@@ -24,6 +24,47 @@ admin.initializeApp()
 const auth = getAuth()
 const db = admin.firestore()
 
+// GETTING ALL SCREAMS
+
+app.get('/getscreams', (req, res) => {
+  db.collection('screams')
+    .orderBy('createdAt', 'desc')
+    .get()
+    .then((data) => {
+      const screams = []
+      data.forEach((doc) => {
+        screams.push({
+          screamId: doc.id,
+          body: doc.data().body,
+          userHandle: doc.data().userHandle,
+          createdAt: doc.data().createdAt
+        })
+      })
+      return res.json(screams)
+    })
+})
+
+// CREATING SCREAMS IN DATABASE
+
+app.post('/createscream', (req, res) => {
+  const newScream = {
+    createdAt: new Date().toISOString(),
+    body: req.body.body,
+    userHandle: req.body.userHandle
+  }
+
+  db.collection('screams').add(newScream)
+    .then((doc) => {
+      const resScream = newScream
+      resScream.screamId = doc.id
+      res.json(resScream)
+    })
+    .catch((err) => {
+      res.status(500).json({ errror: 'something went wrong' })
+      console.error(err)
+    })
+})
+
 // GET USER FROM DATABASE ROUTE
 
 app.get('/getusers', (req, res) => {
@@ -64,7 +105,7 @@ app.get('/getusers', (req, res) => {
     }).catch(err => (console.error(err)))
 })
 
-// CREATE USER IN DATABASE ROUTE
+// MODIFING USER IN DATABASE ROUTE
 
 app.post('/createuser', (req, res) => {
   const newUser = {
@@ -105,6 +146,8 @@ app.post('/createuser', (req, res) => {
     })
 })
 
+// VALIDATIONS
+
 const isEmpty = (string) => {
   if (string.trim() === '') return true
   else return false
@@ -117,7 +160,7 @@ const isEmail = (email) => {
   else return false
 }
 
-// Signup Route
+// SIGN UP AND SIGN IN ROUTES
 
 app.post('/signup', (req, res) => {
   let tokenId, userId
