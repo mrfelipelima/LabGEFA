@@ -94,9 +94,9 @@ app.post('/createuser', (req, res) => {
   }
 
   db.doc(`/userProfile/${newUser.username}`)
-    .create(newUser)
+    .update(newUser)
     .then(doc => {
-      res.status(201).json({ message: `usuário ${newUser.username} criado com sucesso` })
+      res.status(201).json({ message: `usuário ${newUser.username} atualizado com sucesso` })
       console.log(doc)
     })
     .catch(err => {
@@ -104,6 +104,18 @@ app.post('/createuser', (req, res) => {
       console.error(err)
     })
 })
+
+const isEmpty = (string) => {
+  if (string.trim() === '') return true
+  else return false
+}
+
+const isEmail = (email) => {
+  // eslint-disable-next-line no-useless-escape
+  const emailRegEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  if (email.match(emailRegEx)) return true
+  else return false
+}
 
 // Signup Route
 
@@ -116,7 +128,19 @@ app.post('/signup', (req, res) => {
     username: req.body.username
   }
 
-  // TODO validate data
+  const errors = {}
+
+  if (isEmpty(newregistration.email)) {
+    errors.email = 'Must not be empty'
+  } else if (!isEmail(newregistration.email)) {
+    errors.email = 'Must be a valid e-mail address'
+  }
+
+  if (isEmpty(newregistration.password)) errors.password = 'Password must not be empty'
+  if (newregistration.password !== newregistration.confirmpassword) errors.confirmPassword = 'Passwords must match'
+  if (isEmpty(newregistration.username)) errors.username = 'Username must not be empty'
+
+  if (Object.keys(errors).length > 0) return res.status(400).json(errors)
 
   db.doc(`/userProfile/${newregistration.username}`).get()
     .then(doc => {
@@ -150,6 +174,34 @@ app.post('/signup', (req, res) => {
       } else {
         return res.status(500).json({ error: err.code })
       }
+    })
+})
+
+app.post('/login', (req, res) => {
+  const user = {
+    email: req.body.email,
+    password: req.body.password
+  }
+
+  const errors = {}
+
+  if (isEmpty(user.email)) errors.email = 'Must not be empty'
+  if (isEmpty(user.password)) errors.password = 'Must not be empty'
+
+  if (Object.keys(errors).length > 0) return res.status(400).json(errors)
+
+  autentication.signInWithEmailAndPassword(auth, user.email, user.password)
+    .then(data => {
+      return data.user.getIdToken()
+    })
+    .then(token => {
+      return res.json({ token })
+    })
+    .catch(err => {
+      console.error(err)
+      if (err.code === 'auth/wrong-password') {
+        return res.status(403).json({ general: 'Wrong credentials, prlease try again' })
+      } else return res.status(500).json({ error: err.code })
     })
 })
 
