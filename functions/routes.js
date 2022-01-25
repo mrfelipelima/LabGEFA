@@ -1,9 +1,35 @@
-const express = require('express')
+const express = require("express");
+const routes = express.Router();
 
-const usersController = require('./controllers/usersController')
+const {
+  SignupController,
+  LoginController,
+} = require("./controllers/autenticationController");
 
-const routes = express.Router()
+const {
+  ScreamsIndex,
+  ScreamsCreate,
+} = require("./controllers/screamsController");
 
-routes.get('/users', usersController.index)
+const {
+  IndexProfiles,
+  UpdateProfile,
+} = require("./controllers/profileController");
 
-module.exports = routes
+const FBAuth = require("./services/FBAuth");
+
+// AUTENTICATION ROUTES
+routes.post("/signup", SignupController);
+routes.post("/login", LoginController);
+
+// SCREAMS ROUTES
+
+routes.get("/getscreams", ScreamsIndex);
+routes.post("/createscream", FBAuth, ScreamsCreate);
+
+// USERS & PROFILE ROUTES
+
+routes.get("/getusers", IndexProfiles);
+routes.post("/createuser", UpdateProfile);
+
+module.exports = routes;
