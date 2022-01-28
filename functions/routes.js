@@ -14,6 +14,7 @@ const {
 const {
   IndexProfiles,
   UpdateProfile,
+  UploadProfileImage,
 } = require("./controllers/profileController");
 
 const FBAuth = require("./services/FBAuth");
@@ -31,5 +32,6 @@ routes.post("/createscream", FBAuth, ScreamsCreate);
 
 routes.get("/getusers", IndexProfiles);
 routes.post("/createuser", UpdateProfile);
+routes.post("/profile/image", FBAuth, UploadProfileImage);
 
 module.exports = routes;
