@@ -68,3 +68,4 @@ node_modules/
 # User exclusions
 cadastroInfo.json
 textTransfer.txt
+.vscode

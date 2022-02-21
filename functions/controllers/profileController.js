@@ -3,6 +3,7 @@ const BusBoy = require("busboy");
 const path = require("path");
 const os = require("os");
 const fs = require("fs");
+const { uuid } = require("uuidv4");
 
 exports.IndexProfiles = (req, res) => {
   db.collection("userProfile")
@@ -85,21 +86,20 @@ exports.UpdateProfile = (req, res) => {
 };
 
 exports.UploadProfileImage = (req, res) => {
-  const busboy = new BusBoy({ headers: req.headers });
+  const busboy = BusBoy({ headers: req.headers });
 
   let imageFileName;
   let imageToBeUploaded = {};
 
-  busboy.on("file", (fieldname, file, filename, encoding, mimetype) => {
-    console.log(fieldname);
+  busboy.on("file", (name, file, info) => {
+    const { filename, encoding, mimeType } = info
     console.log(filename);
-    console.log(mimetype);
+    console.log(encoding);
+    console.log(mimeType);
     const imageExtension = filename.split(".")[filename.split(".").length - 1];
-    imageFileName = `${Math.round(
-      Math.random() * 100000000000
-    )}.${imageExtension}`;
+    imageFileName = `${uuid()}.${imageExtension}`;
     const filePath = path.join(os.tmpdir(), imageFileName);
-    imageToBeUploaded = { filePath, mimetype };
+    imageToBeUploaded = { filePath, mimeType };
     file.pipe(fs.createWriteStream(filePath));
   });
 
@@ -111,7 +111,7 @@ exports.UploadProfileImage = (req, res) => {
         resumable: false,
         metadata: {
           metadata: {
-            contentType: imageToBeUploaded.mimetype,
+            contentType: imageToBeUploaded.mimeType,
           },
         },
       })
