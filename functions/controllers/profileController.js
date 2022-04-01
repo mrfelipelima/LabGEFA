@@ -45,31 +45,13 @@ exports.IndexProfiles = (req, res) => {
 };
 
 exports.UpdateProfile = (req, res) => {
+  const {email, password} = req.body
+  
   const newUser = {
     createdAt: new Date().toISOString(),
-    participacao: {
-      labgefaStatus: req.body.participacao.labgefaStatus,
-      orientador: req.body.participacao.orientador,
-      ativo: req.body.participacao.ativo,
-      atividades: req.body.participacao.atividades,
-      linhaDePesquisa: req.body.participacao.linhaDePesquisa,
-    },
-    academicInfo: {
-      turnoDeEstudo: req.body.academicInfo.turnoDeEstudo,
-      course: req.body.academicInfo.course,
-      semestreAtual: req.body.academicInfo.semestreAtual,
-      localDeEstudo: req.body.academicInfo.localDeEstudo,
-    },
-    personalData: {
-      name: req.body.personalData.name,
-      lastname: req.body.personalData.lastname,
-      gender: req.body.personalData.gender,
-      birthdate: req.body.personalData.birthdate,
-      nickname: req.body.personalData.nickname,
-    },
-    email: req.body.email,
-    username: req.body.username,
-  };
+    email,
+    password
+  }
 
   db.doc(`/userProfile/${newUser.username}`)
     .update(newUser)
