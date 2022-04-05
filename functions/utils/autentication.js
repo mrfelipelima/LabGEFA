@@ -1,11 +1,11 @@
-const { db } = require("../services/admin");
+const { db } = require("./admin");
 const autentication = require("firebase/auth");
 const firebase = require("firebase/app");
 const { getAuth } = require("firebase/auth");
 const {
   ValidateSignupData,
   ValidateLoginData,
-} = require("../services/validators");
+} = require("./validators");
 
 const firebaseConfig = {
   apiKey: process.env.APIKEY,

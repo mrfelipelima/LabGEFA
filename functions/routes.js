@@ -4,20 +4,20 @@ const routes = express.Router();
 const {
   SignupController,
   LoginController,
-} = require("./controllers/autenticationController");
+} = require("./utils/autentication");
 
 const {
   ScreamsIndex,
   ScreamsCreate,
-} = require("./controllers/screamsController");
+} = require("./handlers/screams");
 
 const {
   IndexProfiles,
   UpdateProfile,
   UploadProfileImage,
-} = require("./controllers/profileController");
+} = require("./handlers/users");
 
-const FBAuth = require("./services/FBAuth");
+const FBAuth = require("./utils/FBAuth");
 
 // AUTENTICATION ROUTES
 routes.post("/signup", SignupController);

@@ -1,4 +1,4 @@
-const { db } = require("../services/admin");
+const { db } = require("../utils/admin");
 
 exports.ScreamsIndex = (req, res) => {
   db.collection("screams")

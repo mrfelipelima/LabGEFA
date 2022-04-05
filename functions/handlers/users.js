@@ -1,4 +1,4 @@
-const { db, admin } = require("../services/admin");
+const { db, admin } = require("../utils/admin");
 const BusBoy = require("busboy");
 const path = require("path");
 const os = require("os");
@@ -46,7 +46,7 @@ exports.IndexProfiles = (req, res) => {
 
 exports.UpdateProfile = (req, res) => {
   const {email, password} = req.body
-  
+
   const newUser = {
     createdAt: new Date().toISOString(),
     email,
