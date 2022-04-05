@@ -21,7 +21,7 @@ exports.ValidateSignupData = (data) => {
   }
 
   if (isEmpty(data.password)) errors.password = "Password must not be empty";
-  if (data.password !== data.confirmpassword)
+  if (data.password !== data.confirmPassword)
     errors.confirmPassword = "Passwords must match";
   if (isEmpty(data.username)) errors.username = "Username must not be empty";
 

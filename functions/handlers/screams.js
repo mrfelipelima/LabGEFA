@@ -1,6 +1,6 @@
 const { db } = require("../utils/admin");
 
-exports.ScreamsIndex = (req, res) => {
+exports.ScreamsRead = (req, res) => {
   db.collection("screams")
     .orderBy("createdAt", "desc")
     .get()
